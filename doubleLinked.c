@@ -2,7 +2,6 @@
 #include <stdlib.h>
 #include <string.h>
 #include "functions.h"
-#include "fileHandle.c"
 
 int main(int argc, char* argv[]) {
     int *values;
@@ -21,7 +20,7 @@ int main(int argc, char* argv[]) {
     }
 
     if (strcmp(argv[1], "--interactive") == 0 || strcmp(argv[1], "-i") == 0) {
-        interactiveMode();
+        interactiveMode(list);
     } else if (strcmp(argv[1], "--file") == 0 || strcmp(argv[1], "-f") == 0) {
         if (argc < 5) {
             printf("[-] Error: Insufficient arguments for file operation.\n");
@@ -36,7 +35,16 @@ int main(int argc, char* argv[]) {
                     printf("[-] Error: Failed to read data from file.\n");
                     return 1;
                 }
-                printData(argv[2], values, &numValues);
+                printData(values, &numValues);
+                free(values);
+            } else if (strcmp(argv[4], "1") == 0) {
+                values = readData(argv[2], &numValues);
+                if (values == NULL) {
+                    printf("[-] Error: Failed to read data from file.\n");
+                    return 1;
+                }
+                insertUniqueValues(list, values, numValues);
+                printList(list);
                 free(values);
             } else {
                 printf("[-] Error: Invalid action.\n");

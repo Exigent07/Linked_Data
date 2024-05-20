@@ -34,7 +34,7 @@ int* readData(const char *filename, int *numValues) {
     return values;
 }
 
-int printData(const char *filename, int *values, int *numValues) {
+int printData(int *values, int *numValues) {
     if (values == NULL || numValues == NULL || *numValues <= 0) {
         printf("Invalid input.\n");
         return 0;
