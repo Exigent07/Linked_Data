@@ -56,42 +56,6 @@ or
 - **0**: Reads data from the file and prints it.
 - **1**: Reads data from the file, loads it into the linked list, and then prints the list.
 
-## Functions
-
-### `create()`
-
-Creates a new doubly linked list and initializes it with a dummy node.
-
-### `insertAtHead(DoublyList* list, int data)`
-
-Inserts a new node with the given data at the head (beginning) of the doubly linked list.
-
-### `insertAtTail(DoublyList* list, int data)`
-
-Inserts a new node with the given data at the tail (end) of the doubly linked list.
-
-### `printList(DoublyList* list)`
-
-Prints the data of each node in the doubly linked list from the head to the tail.
-
-### `readData(const char *filename, int *numValues)`
-
-Reads integer data from a file and stores it in an array. Returns the array and the number of values read.
-
-### `printData(const char *filename, int *values, int *numValues)`
-
-Prints the values read from a file.
-
-### `insertUniqueValues(DoublyList* list, int* values, int numValues)`
-
-Inserts values from an array into the linked list. If a value already exists in the list, it moves that value to the front instead of inserting it again.
-
-### `printHelp(const char* progName, const char* mode)`
-
-Prints the help information for the tool.
-
-### `interactiveMode(DoublyList* list)`
-
 Handles interactive mode, allowing the user to enter commands to manipulate the linked list and perform other operations.
 
 ## Example Usage
