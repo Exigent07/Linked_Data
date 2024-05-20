@@ -1,5 +1,6 @@
 #include <stdlib.h>
 #include <stdio.h>
+#include <string.h>
 
 int* readData(const char *filename, int *numValues) {
     FILE *file = fopen(filename, "r");

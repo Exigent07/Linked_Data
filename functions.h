@@ -1,9 +1,6 @@
 #ifndef FUNCTIONS_H
 #define FUNCTIONS_H
 
-#include <stdio.h>
-#include <stdlib.h>
-#include <string.h>
 #include "fileHandle.c"
 
 /*
@@ -59,60 +56,6 @@ DoublyList* create() {
     list->size = 0;
 
     return list;
-}
-
-/*
-Inserts a new node with the given data at the head (beginning) of the doubly linked list.
-Updates the pointers of the existing nodes to maintain the doubly linked structure.
-Increments the size of the list.
-*/
-void insertAtHead(DoublyList* list, int data) {
-    if (!list) return;
-
-    Node* newNode = (Node*)malloc(sizeof(Node));
-    if (!newNode) {
-        printf("[-] Memory allocation failed\n");
-        return;
-    }
-
-    newNode->data = data;
-
-    Node* head = list->head;
-    Node* firstNode = head->next;
-
-    newNode->next = firstNode;
-    newNode->prev = head;
-    head->next = newNode;
-    firstNode->prev = newNode;
-
-    list->size++;
-}
-
-/*
-Inserts a new node with the given data at the tail (end) of the doubly linked list.
-Updates the pointers of the existing nodes to maintain the doubly linked structure.
-Increments the size of the list.
-*/
-void insertAtTail(DoublyList* list, int data) {
-    if (!list) return;
-
-    Node* newNode = (Node*)malloc(sizeof(Node));
-    if (!newNode) {
-        printf("[-] Memory allocation failed\n");
-        return;
-    }
-
-    newNode->data = data;
-
-    Node* head = list->head;
-    Node* lastNode = head->prev;
-
-    newNode->next = head;
-    newNode->prev = lastNode;
-    lastNode->next = newNode;
-    head->prev = newNode;
-
-    list->size++;
 }
 
 /*
