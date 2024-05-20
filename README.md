@@ -56,8 +56,6 @@ or
 - **0**: Reads data from the file and prints it.
 - **1**: Reads data from the file, loads it into the linked list, and then prints the list.
 
-Handles interactive mode, allowing the user to enter commands to manipulate the linked list and perform other operations.
-
 ## Example Usage
 
 ### Starting Interactive Mode
