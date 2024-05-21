@@ -29,6 +29,16 @@ typedef struct {
     int size;
 } DoublyList;
 
+void handle_signal(int sig) {
+    if (sig == SIGINT) {
+        printf("\nYou pressed Ctrl+C (SIGINT). Exiting...\n");
+        exit(0);
+    } else {
+        printf("\nCaught signal %d. Enter 'exit' or 'quit' to exit...\n", sig);
+        printf("> ");
+    }
+}
+
 /*
 Creates a new doubly linked list and initializes it with a dummy node.
 Returns a pointer to the newly created DoublyList. If memory allocation fails, returns NULL.
@@ -95,6 +105,7 @@ void insertUniqueValues(DoublyList* list, int* values, int numValues) {
             if (currentNode->data == valueToInsert) {
                 currentNode->prev->next = currentNode->next;
                 currentNode->next->prev = currentNode->prev;
+                currentNode->count++;
 
                 currentNode->next = list->head->next;
                 currentNode->prev = list->head;
@@ -114,6 +125,7 @@ void insertUniqueValues(DoublyList* list, int* values, int numValues) {
                 return;
             }
             newNode->data = valueToInsert;
+            newNode->count = 1;
 
             newNode->next = list->head->next;
             newNode->prev = list->head;
@@ -122,6 +134,25 @@ void insertUniqueValues(DoublyList* list, int* values, int numValues) {
             list->head->next = newNode;
         }
     }
+}
+
+void deleteAllNodes(DoublyList* list) {
+    if (!list || !list->head) {
+        return;
+    }
+
+    Node* current = list->head->next;
+    Node* nextNode;
+
+    while (current != list->head) {
+        nextNode = current->next;
+        free(current);
+        current = nextNode;
+    }
+
+    list->head->next = list->head;
+    list->head->prev = list->head;
+    list->size = 0;
 }
 
 /*
@@ -140,6 +171,39 @@ void printList(DoublyList* list) {
         current = current->next;
     }
     printf("\n");
+}
+
+
+void printCount(DoublyList* list) {
+    if (!list) return;
+
+    Node* current = list->head->next;
+
+    printf("The list:\n");
+    while (current != list->head) {
+        printf("%d: %d, ", current->data, current->count);
+        current = current->next;
+    }
+    printf("\n");
+}
+
+void writeListToFile(const char *filename, DoublyList* list, int size) {
+    FILE *file = fopen(filename, "w");
+    if (file == NULL) {
+        printf("[-] Failed to open file for writing\n");
+        exit(1);
+    }
+
+    if (!list) return;
+
+    Node* current = list->head->next;
+
+    while (current != list->head) {
+        fprintf(file, "%d ", current->data);
+        current = current->next;
+    }
+
+    fclose(file);
 }
 
 /*
@@ -165,14 +229,19 @@ void printHelp(const char* programName, const char* helpType) {
         printf("  \t[Operations]\n");
         printf("  \t  - 0 To print the data.\n");
         printf("  \t  - 1 To load it into linked list.\n");
+        printf("  \t  - 2 To load and print count.\n");
+        printf("  \t  - 3 [Filename] To load and write to a file.\n");
         printf("  -i, --interactive\t\tTo enter interactive mode\n");
     } else if (strcmp(helpType, "interactive") == 0) {
         printf("Options:\n");
         printf("  help\t\t\tDisplay this help message\n");
         printf("  read \t\t\tSpecify the input file\n");
+        printf("  write \t\twrite the data into a file\n");
         printf("  print\t\t\tTo print the loaded file\n");
         printf("  clear\t\t\tTo clear the screen\n");
+        printf("  count\t\t\tTo print the count\n");
         printf("  load\t\t\tTo load it into linked list\n");
+        printf("  free\t\t\tTo free|remove all nodes\n");
         printf("  exit|quit\t\tTo exit interactive mode\n");
     }
 
@@ -203,6 +272,7 @@ void interactiveMode(DoublyList* list) {
     char filename[100];
     int *values = NULL;
     int initial = 1;
+    int loaded = 0;
     int numValues = 0;
     
     while (1) {
@@ -231,6 +301,19 @@ void interactiveMode(DoublyList* list) {
                 printf("File read successfully.\n");
             }
             continue;
+        } else if (strcmp(input, "write") == 0) {
+            if (!loaded) {
+                printf("Warning: Load a file first.\n");
+                continue;
+            }
+
+            printf("Enter a Filename: ");
+            fgets(filename, sizeof(filename), stdin);
+            filename[strcspn(filename, "\n")] = '\0';
+            writeListToFile(filename, list, numValues);
+
+            printf("Data written successfully.\n");
+            continue;
         } else if (strcmp(input, "print") == 0) {
             if (values == NULL || numValues <= 0) {
                 printf("Warning: Read a file first.\n");
@@ -238,6 +321,14 @@ void interactiveMode(DoublyList* list) {
             }
 
             printData(values, &numValues);
+            continue;
+        } else if (strcmp(input, "count") == 0) {
+            if (values == NULL || numValues <= 0) {
+                printf("Warning: Read a file first.\n");
+                continue;
+            }
+
+            printCount(list);
             continue;
         } else if (strcmp(input, "load") == 0) {
             if (values == NULL || numValues <= 0) {
@@ -250,6 +341,15 @@ void interactiveMode(DoublyList* list) {
             free(values);
             values = NULL;
             numValues = 0;
+            loaded = 1;
+            continue;
+        }  else if (strcmp(input, "free") == 0) {
+            if (!loaded) {
+                printf("Warning: Load a file first.\n");
+                continue;
+            }
+            deleteAllNodes(list);
+            printf("Note: Removed all nodes.\n");
             continue;
         } else if (strcmp(input, "clear") == 0) {
                 #ifdef _WIN32
