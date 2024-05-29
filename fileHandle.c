@@ -3,6 +3,11 @@
 #include <string.h>
 #include <signal.h>
 
+enum {
+    SUCCESS,
+    FAILURE
+};
+
 int* readData(const char *filename, int *numValues) {
     FILE *file = fopen(filename, "r");
     if (file == NULL) {
@@ -39,7 +44,7 @@ int* readData(const char *filename, int *numValues) {
 int printData(int *values, int *numValues) {
     if (values == NULL || numValues == NULL || *numValues <= 0) {
         printf("[-] Invalid input.\n");
-        return 0;
+        return FAILURE;
     }
 
     printf("Values read from the file:\n");
@@ -48,5 +53,5 @@ int printData(int *values, int *numValues) {
     }
     printf("\n");
 
-    return 1;
+    return SUCCESS;
 }

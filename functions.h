@@ -206,6 +206,25 @@ void writeListToFile(const char *filename, DoublyList* list, int size) {
     fclose(file);
 }
 
+Node* search(DoublyList* list, int value) {
+    if (!list) {
+        printf("[-] Error: The list is NULL.\n");
+        return NULL;
+    }
+
+    Node* currentNode = list->head->next;
+    while (currentNode != list->head) {
+        if (currentNode->data == value) {
+            printf("[+] Value %d found in the list.\n", value);
+            return currentNode;
+        }
+        currentNode = currentNode->next;
+    }
+
+    printf("[-] Value %d not found in the list.\n", value);
+    return NULL;
+}
+
 /*
 Prints the usage and options of the program.
 
@@ -237,6 +256,7 @@ void printHelp(const char* programName, const char* helpType) {
         printf("  help\t\t\tDisplay this help message\n");
         printf("  read \t\t\tSpecify the input file\n");
         printf("  write \t\twrite the data into a file\n");
+        printf("  search\t\tTo search a data in the list\n");
         printf("  print\t\t\tTo print the loaded file\n");
         printf("  clear\t\t\tTo clear the screen\n");
         printf("  count\t\t\tTo print the count\n");
@@ -271,10 +291,11 @@ void interactiveMode(DoublyList* list) {
     char input[256];
     char filename[100];
     int *values = NULL;
+    int value;
     int initial = 1;
     int loaded = 0;
     int numValues = 0;
-    
+
     while (1) {
         if (initial) {
             printf("\nEnter a command (type 'help' for usage) > ");
@@ -282,9 +303,8 @@ void interactiveMode(DoublyList* list) {
         } else {
             printf("\n> ");
         }
-        
-        fgets(input, sizeof(input), stdin);
 
+        fgets(input, sizeof(input), stdin);
         input[strcspn(input, "\n")] = '\0';
 
         if (strcmp(input, "help") == 0) {
@@ -313,6 +333,23 @@ void interactiveMode(DoublyList* list) {
             writeListToFile(filename, list, numValues);
 
             printf("Data written successfully.\n");
+            continue;
+        } else if (strcmp(input, "search") == 0) {
+            if (!loaded) {
+                printf("Warning: Load a file first.\n");
+                continue;
+            }
+
+            printf("Enter the value: ");
+            scanf("%d", &value);
+            getchar();
+
+            Node* result = search(list, value);
+            if (result) {
+                printf("[+] Value %d found in the list with count %d.\n", value, result->count);
+            } else {
+                printf("[-] Value %d not found in the list.\n", value);
+            }
             continue;
         } else if (strcmp(input, "print") == 0) {
             if (values == NULL || numValues <= 0) {
@@ -343,7 +380,7 @@ void interactiveMode(DoublyList* list) {
             numValues = 0;
             loaded = 1;
             continue;
-        }  else if (strcmp(input, "free") == 0) {
+        } else if (strcmp(input, "free") == 0) {
             if (!loaded) {
                 printf("Warning: Load a file first.\n");
                 continue;
@@ -352,13 +389,12 @@ void interactiveMode(DoublyList* list) {
             printf("Note: Removed all nodes.\n");
             continue;
         } else if (strcmp(input, "clear") == 0) {
-                #ifdef _WIN32
-                    system("cls");
-                #else
-                    system("clear");
-                #endif
-
-                continue;
+            #ifdef _WIN32
+                system("cls");
+            #else
+                system("clear");
+            #endif
+            continue;
         } else if (strcmp(input, "quit") == 0 || strcmp(input, "exit") == 0) {
             printf("Exiting interactive mode.\n");
             break;
