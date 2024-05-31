@@ -57,6 +57,7 @@ int main(int argc, char* argv[]) {
                 insertUniqueValues(list, values, numValues);
                 printCount(list);
                 deleteAllNodes(list);
+                
                 free(values);
             } else if (strcmp(argv[4], "3") == 0 && argv[5]) {
                 values = readData(argv[2], &numValues);

@@ -3,14 +3,6 @@
 
 #include "fileHandle.c"
 
-/*
-The Node struct represents a single node in the doubly linked list. 
-It contains:
-- data: The integer data stored in the node.
-- count: An additional integer that can be used for counting purposes.
-- prev: A pointer to the previous node in the list.
-- next: A pointer to the next node in the list.
-*/
 typedef struct Node {
     int data;
     int count;
@@ -18,12 +10,6 @@ typedef struct Node {
     struct Node* next;
 } Node;
 
-/*
-The DoublyList struct represents the entire doubly linked list. 
-It contains:
-- head: A pointer to the dummy node which simplifies insertion and deletion operations.
-- size: An integer representing the number of elements in the list (excluding the dummy node).
-*/
 typedef struct {
     Node* head;
     int size;
@@ -39,11 +25,6 @@ void handle_signal(int sig) {
     }
 }
 
-/*
-Creates a new doubly linked list and initializes it with a dummy node.
-Returns a pointer to the newly created DoublyList. If memory allocation fails, returns NULL.
-The dummy node's prev and next pointers point to itself, creating a circular structure.
-*/
 DoublyList* create() {
     DoublyList* list = (DoublyList*)malloc(sizeof(DoublyList));
     if (!list) {
@@ -67,29 +48,6 @@ DoublyList* create() {
 
     return list;
 }
-
-/*
-    This function inserts unique values from an array into a doubly linked list.
-    It checks each value in the array against the existing nodes in the list.
-    If a value already exists in the list, it is moved to the front of the list.
-    If a value does not exist in the list, it is inserted at the front of the list.
-
-    Parameters:
-        - list: Pointer to a DoublyList representing the linked list.
-        - values: Pointer to an array of integers containing the values to be inserted.
-        - numValues: Number of values in the array.
-
-    Algorithm:
-        1. For each value in the array:
-            a. Check if the value already exists in the list.
-            b. If the value exists, move it to the front of the list.
-            c. If the value does not exist, insert it at the front of the list.
-
-    Note:
-        - This function assumes that the linked list is initialized and has a valid head node.
-        - Memory allocation for new nodes is handled within the function.
-        - Duplicates are moved to the front to ensure uniqueness in the list.
-*/
 
 void insertUniqueValues(DoublyList* list, int* values, int numValues) {
     if (!list || !values || numValues <= 0) {
@@ -154,11 +112,6 @@ void deleteAllNodes(DoublyList* list) {
     list->head->prev = list->head;
     list->size = 0;
 }
-
-/*
-Prints the data of each node in the doubly linked list from the head to the tail.
-Starts from the node after the dummy node and traverses the list until it reaches the dummy node again.
-*/
 
 void printList(DoublyList* list) {
     if (!list) return;
@@ -225,19 +178,6 @@ Node* search(DoublyList* list, int value) {
     return NULL;
 }
 
-/*
-Prints the usage and options of the program.
-
-Arguments:
-    programName: The name of the program executable.
-
-Options:
-    -h, --help    Display this help message
-    -f, --file FILE    Specify the input file
-
-This function prints the usage and options of the program. It provides information on how to use the program's command-line options and what each option does.
-*/
-
 void printHelp(const char* programName, const char* helpType) {
     if (strcmp(helpType, "args") == 0) {
         printf("Usage: %s [OPTIONS]\n", programName);
@@ -266,26 +206,6 @@ void printHelp(const char* programName, const char* helpType) {
     }
 
 }
-
-/*
-    This function implements an interactive mode for command-line interaction.
-    It continuously prompts the user for input commands until the user chooses to exit.
-    Supported commands include 'help' for usage information, 'quit' or 'exit' to exit interactive mode,
-    and handling of unknown commands with appropriate feedback.
-
-    Algorithm:
-        1. Initialize an input buffer and set initial flag for prompting the user.
-        2. Continuously loop to prompt the user for input.
-        3. Parse user input and handle supported commands:
-            - 'help': Print usage information using printHelp function.
-            - 'quit' or 'exit': Exit the interactive mode loop.
-            - Unknown commands: Provide feedback about unknown commands.
-
-    Note:
-        - Input commands are case-sensitive.
-        - The 'help' command displays usage information for interactive mode.
-        - Exiting interactive mode terminates the loop and returns to the main program.
-*/
 
 void interactiveMode(DoublyList* list) {
     char input[256];
